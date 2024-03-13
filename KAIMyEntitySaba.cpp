@@ -103,7 +103,30 @@ void KAIMyEntitySaba::UpdateModel(Model *model)
 
 			if (i == maxAnim)
 			{
+				/*
 				model->mmdModel->UpdateAllAnimation(vmdAnim, animTime * FPS, elapsed);
+				*/
+				if (vmdAnim != nullptr)
+				{
+					vmdAnim->Evaluate(animTime * FPS);
+				}
+
+				const char name[] = { static_cast<char>(0xE9), static_cast<char>(0xA6), static_cast<char>(0x96), 0x00 }; //Japanese name of bone by UTF8 [首]
+				auto nodeIdx = model->mmdModel->GetNodeManager()->FindNodeIndex(name);
+				if ((model->isHeadInSyncWithCamera)&&(model->mmdModel->GetNodeManager()->NPos != nodeIdx)) {
+					auto neckNode = model->mmdModel->GetNodeManager()->GetMMDNode(name);
+					neckNode->SetAnimationRotate(neckNode->GetAnimationRotate()*glm::quat(glm::vec3(model->headAngle[0], model->headAngle[1], model->headAngle[2])));
+					model->mmdModel->UpdateMorphAnimation();
+					model->mmdModel->UpdateNodeAnimation(false);
+					model->mmdModel->UpdatePhysicsAnimation(elapsed);
+					model->mmdModel->UpdateNodeAnimation(true);
+					neckNode->SetAnimationRotate(neckNode->GetAnimationRotate()*glm::inverse(glm::quat(glm::vec3(model->headAngle[0], model->headAngle[1], model->headAngle[2]))));
+				}else{
+					model->mmdModel->UpdateMorphAnimation();
+					model->mmdModel->UpdateNodeAnimation(false);
+					model->mmdModel->UpdatePhysicsAnimation(elapsed);
+					model->mmdModel->UpdateNodeAnimation(true);
+				}
 			}
 			else
 			{
@@ -288,7 +311,7 @@ void KAIMyEntitySaba::DeleteMat(glm::mat4 *mat)
 
 void KAIMyEntitySaba::GetRightHandMat(Model *model, glm::mat4 *mat)
 {
-	const char name[] = {static_cast<char>(0xE5), static_cast<char>(0x8F), static_cast<char>(0xB3), static_cast<char>(0xE4), static_cast<char>(0xB8), static_cast<char>(0xAD), static_cast<char>(0xE6), static_cast<char>(0x8C), static_cast<char>(0x87), static_cast<char>(0xEF), static_cast<char>(0xBC), static_cast<char>(0x91), 0x00}; //Japanese name of bone by UTF8
+	const char name[] = {static_cast<char>(0xE5), static_cast<char>(0x8F), static_cast<char>(0xB3), static_cast<char>(0xE4), static_cast<char>(0xB8), static_cast<char>(0xAD), static_cast<char>(0xE6), static_cast<char>(0x8C), static_cast<char>(0x87), static_cast<char>(0xEF), static_cast<char>(0xBC), static_cast<char>(0x91), 0x00}; //Japanese name of bone by UTF8 [右中指１]
 	saba::MMDNode *node = model->mmdModel->GetNodeManager()->GetMMDNode(name);
 	if (node == nullptr)
 		return;
@@ -297,7 +320,7 @@ void KAIMyEntitySaba::GetRightHandMat(Model *model, glm::mat4 *mat)
 
 void KAIMyEntitySaba::GetLeftHandMat(Model *model, glm::mat4 *mat)
 {
-	const char name[] = {static_cast<char>(0xE5), static_cast<char>(0xB7), static_cast<char>(0xA6), static_cast<char>(0xE4), static_cast<char>(0xB8), static_cast<char>(0xAD), static_cast<char>(0xE6), static_cast<char>(0x8C), static_cast<char>(0x87), static_cast<char>(0xEF), static_cast<char>(0xBC), static_cast<char>(0x91), 0x00}; //Japanese name of bone by UTF8
+	const char name[] = {static_cast<char>(0xE5), static_cast<char>(0xB7), static_cast<char>(0xA6), static_cast<char>(0xE4), static_cast<char>(0xB8), static_cast<char>(0xAD), static_cast<char>(0xE6), static_cast<char>(0x8C), static_cast<char>(0x87), static_cast<char>(0xEF), static_cast<char>(0xBC), static_cast<char>(0x91), 0x00}; //Japanese name of bone by UTF8 [左中指１]
 	saba::MMDNode *node = model->mmdModel->GetNodeManager()->GetMMDNode(name);
 	if (node == nullptr)
 		return;
@@ -378,4 +401,11 @@ saba::VMDAnimation *KAIMyEntitySaba::LoadAnimation(Model *model, const char *fil
 void KAIMyEntitySaba::DeleteAnimation(saba::VMDAnimation *anim)
 {
 	delete anim;
+}
+
+void KAIMyEntitySaba::SetHeadAngle(Model *model, float x, float y, float z, bool flag) {
+	model->headAngle[0] = x;
+	model->headAngle[1] = y;
+	model->headAngle[2] = z;
+	model->isHeadInSyncWithCamera = flag;
 }

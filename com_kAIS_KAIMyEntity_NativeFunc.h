@@ -61,6 +61,8 @@ extern "C" {
 	JNIEXPORT jlong JNICALL Java_com_kAIS_KAIMyEntity_NativeFunc_LoadAnimation(JNIEnv* env, jobject obj, jlong model, jstring filename);
 	JNIEXPORT void JNICALL Java_com_kAIS_KAIMyEntity_NativeFunc_DeleteAnimation(JNIEnv* env, jobject obj, jlong anim);
 
+	JNIEXPORT void JNICALL Java_com_kAIS_KAIMyEntity_NativeFunc_SetHeadAngle(JNIEnv* env, jobject obj, jlong model, jfloat headX, jfloat headY, jfloat headZ, jboolean isHeadInSyncWithCamera);
+
 #ifdef __cplusplus
 }
 #endif

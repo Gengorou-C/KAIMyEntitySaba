@@ -250,3 +250,8 @@ JNIEXPORT void JNICALL Java_com_kAIS_KAIMyEntity_NativeFunc_DeleteAnimation(JNIE
 {
 	DeleteAnimation((saba::VMDAnimation*)anim);
 }
+
+JNIEXPORT void JNICALL Java_com_kAIS_KAIMyEntity_NativeFunc_SetHeadAngle(JNIEnv* env, jobject obj, jlong model, jfloat headX, jfloat headY, jfloat headZ, jboolean isHeadInSyncWithCamera)
+{
+	SetHeadAngle((Model*) model, headX, headY, headZ, isHeadInSyncWithCamera);
+}

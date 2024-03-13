@@ -22,6 +22,8 @@ namespace KAIMyEntitySaba
 		saba::VMDAnimation **vmdAnims;
 		double *animTimes;
 		double prevSabaTime;
+		float headAngle[3] = { 0.0f };
+		bool isHeadInSyncWithCamera = false;
 	};
 
 	Model *LoadModelPMX(const char *filename, const char *dir, size_t layerCount);
@@ -74,6 +76,7 @@ namespace KAIMyEntitySaba
 
 	saba::VMDAnimation *LoadAnimation(Model *model, const char *filename);
 	void DeleteAnimation(saba::VMDAnimation *anim);
+	void SetHeadAngle(Model *model, float headX, float headY, float headZ, bool isHeadInSyncWithCamera);
 }
 
 #endif
